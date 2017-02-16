@@ -1,6 +1,6 @@
 #include "my_collection.h"
 
-int     ft_strlen(char *str)
+int     ft_strlen(char *str) /// Compter le nb de caracteres par string
 {
     int i = 0;
     while (str[i] != '\0')
@@ -8,7 +8,7 @@ int     ft_strlen(char *str)
     return (i);
 }
 
-char    *ft_strclr(char *str)
+char    *ft_strclr(char *str) /// Effacer une string en remplacant chaque caracteres par \0
 {
     int i;
 
@@ -21,31 +21,43 @@ char    *ft_strclr(char *str)
     return (str);
 }
 
-/*char    **sort_tab(char **tab)
+static int     cmpdecroiss(void const *a, void const *b) /// Tri décroissant
+{
+    char const *const *pa = a;
+    char const *const *pb = b;
+
+    return (-strcmp(*pa, *pb));
+}
+
+static int     cmpcroiss(void const *a, void const *b) /// Tri croissant
+{
+    char const *const *pa = a;
+    char const *const *pb = b;
+
+    return strcmp(*pa, *pb);
+}
+
+char    **sort_fiches(char **tab) /// Choix du tri avec qsort (tri a bulle)
 {
     int len = cpt_fiches(tab);
-    unsigned int	a;
-	char*			tmp;
-
-	a = 1;
-	if (len != 0)
-	{
-		while (a <= len)
-		{
-			if (strcmp(tab[a], tab[a+1]))
-			{
-				tmp = tab[a];
-				tab[a] = tab[a - 1];
-				tab[a - 1] = tmp;
-				a = 0;
-			}
-			++a;
-		}
-	}
+    int choix;
+    printf("Tri croissant a partir du nom : 1\n");
+    printf("Tri decroissant a partir du nom : 2 \n Votre choix :  ");
+    scanf("%d", &choix);
+    if (choix == 1)
+    {
+        qsort (tab, len, sizeof *tab, cmpcroiss);
+    }
+    else if (choix == 2)
+    {
+        qsort (tab, len, sizeof *tab, cmpdecroiss);
+    }
+    else
+        printf("Saisie invalide");
 	return(tab);
-}*/
+}
 
-char    **load_fiche()
+char    **load_fiche() /// Transformer le fichier en tableau de string
 {
     int i = 0;
     int cpt_ln = 0;
@@ -78,7 +90,6 @@ char    **load_fiche()
     rewind(fichier); /// Remettre le curseur a zero
     while(tour < cpt_ln) // Tant que l'on a pas lu toutes les fiches
     {
-        ft_strclr(ligne);
         while(1) /// Copie une ligne dans "ligne"
         {
             tmp = fgetc(fichier);
@@ -87,7 +98,7 @@ char    **load_fiche()
             if ((tmp <= 57 && tmp >= 48) //Chiffres
                 || (tmp >= 65 && tmp <= 90) // Majuscules
                 || (tmp <= 122 && tmp >= 97) // Minuscules
-                ||  tmp == 45)
+                ||  tmp == 45) // tiret
             {
                  ligne[prog] = ((char)tmp);
             }
@@ -121,7 +132,7 @@ char    **load_fiche()
     return (tab);
 }
 
-void    disp_all_fiches(char **tab)
+void    disp_all_fiches(char **tab) /// Afficher toutes les fiches a partir du tableau de string
 {
     int i;
 
@@ -133,7 +144,7 @@ void    disp_all_fiches(char **tab)
     }
 }
 
-void echo_to_fichier(char **tab)
+void    echo_to_fichier(char **tab) /// Ecrire dans le fichier le tableau de string
 {
     int i = 0;
 
@@ -148,7 +159,7 @@ void echo_to_fichier(char **tab)
     fclose(fichier);
 }
 
-int   add_fiche(char** tab)
+int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, dont on prend les composants que l'on concatène dans une string
 {
     struct fiche *tmp; /// Structure temporaire
     char film[100]; /// Variable temporaire de film
@@ -195,7 +206,6 @@ int   add_fiche(char** tab)
         return (-1);
     }
     tmp->annee = annee;
-
 
     /// NOM REALISATEUR
 
@@ -274,7 +284,34 @@ int   add_fiche(char** tab)
     return (1);
 }
 
-int cpt_fiches(char **tab)
+char **del_fiche(char **tab) /// Supprimer une fiches en effacant une fiche + décalage des autres fiches
+{
+    int choix;
+    int len = cpt_fiches(tab);
+
+    printf("Voici vos fiches : ");
+    disp_all_fiches(tab);
+    printf("\n Entrez le numero de la fiche que vous voulez supprimer : ");
+    scanf("%d", &choix);
+
+    if ((choix >= cpt_fiches(tab)) || (choix < 0))
+    {
+        printf("Fiche inexistante");
+        return (NULL);
+    }
+    else
+    {
+        ft_strclr(tab[choix]);
+        while(choix < len)
+        {
+            tab[choix] = tab[choix + 1];
+            choix++;
+        }
+    }
+    return(tab);
+}
+
+int cpt_fiches(char **tab) /// Permet de compter le nb de fiches, indispensable pour l'allocation dynamique
 {
     int i;
 
@@ -291,7 +328,7 @@ int main()
     int nbfiches;
 
     char **tab; /// Tableau des fiches chargées
-    printf("Bonjour !\n Que voulez-vous faire ? \n 1 : Ajouter une fiche \n 2 : Afficher toutes les fiches \n 3 : Quitter \n");
+    printf("Bonjour !\n Que voulez-vous faire ? \n 1 : Ajouter une fiche \n 2 : Afficher toutes les fiches \n 3 : Trier les fiches dans l'ordre croissant, a partir du nom \n 4 : Supprimer une fiche \n 5 : Quitter \n");
     tab = load_fiche();
     nbfiches = cpt_fiches(tab);
     printf("\nVous avez %d fiches. Vous pouvez encore ajouter %d fiches.", nbfiches, 100-nbfiches);
@@ -305,26 +342,45 @@ int main()
             scanf("%d", &choix);
             switch(choix)
             {
-                case 1 :
-                tab = load_fiche();
+                case 1 : /// Ajouter une fiche
                 if ((ok = add_fiche(tab)) == -1)
                     printf("Ajout impossible");
                 disp_all_fiches(tab);
                 break;
 
-                case 2 :
-                tab = load_fiche();
+                case 2 : /// Afficher toutes les fiches
                 printf("\n\nVoici les fiches : \n\n");
                 disp_all_fiches(tab);
                 break;
 
-                case 3 :
+                case 3 : /// Trier les fiches par ordre decroissant ou croissant
+                tab = sort_fiches(tab);
+                disp_all_fiches(tab);
+                echo_to_fichier(tab);
+                printf("Fiches Triees");
+                break;
+
+                case 4: /// Supprimer une fiche
+                del_fiche(tab);
+                echo_to_fichier(tab);
+                break;
+
+                case 5 : /// Quitter
                 printf("Au revoir, a bientot \n");
+                return(1);
+
+                default : /// invalide
+                printf("Saisie invalide");
                 break;
             }
-        } while(choix != 3);
+        } while(choix != 5);
     }
-    else
+    else /// Cas ou il y a trop de fiches.
+    {
         printf("Vous avez trop de fiches. Supprimez-en");
+        del_fiche(tab);
+        echo_to_fichier(tab);
+    }
+
     return (1);
 }
