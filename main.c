@@ -10,9 +10,7 @@ int     ft_strlen(char *str) /// Compter le nb de caracteres par string
 
 char    *ft_strclr(char *str) /// Effacer une string en remplacant chaque caracteres par \0
 {
-    int i;
-
-    i = 0;
+    int i = 0;
     while(str[i])
     {
         str[i] = '\0';
@@ -25,7 +23,6 @@ static int     cmpdecroiss(void const *a, void const *b) /// Tri décroissant
 {
     char const *const *pa = a;
     char const *const *pb = b;
-
     return (-strcmp(*pa, *pb));
 }
 
@@ -33,14 +30,13 @@ static int     cmpcroiss(void const *a, void const *b) /// Tri croissant
 {
     char const *const *pa = a;
     char const *const *pb = b;
-
     return strcmp(*pa, *pb);
 }
 
 char    **sort_fiches(char **tab) /// Choix du tri avec qsort (tri a bulle)
 {
-    int len = cpt_fiches(tab);
     int choix;
+    int len = cpt_fiches(tab);
     printf("Tri croissant a partir du nom : 1\n");
     printf("Tri decroissant a partir du nom : 2 \n Votre choix :  ");
     scanf("%d", &choix);
@@ -59,17 +55,16 @@ char    **sort_fiches(char **tab) /// Choix du tri avec qsort (tri a bulle)
 
 char    **load_fiche() /// Transformer le fichier en tableau de string
 {
+    char **tab;
+    int tmp;
+    char ligne[100];
     int i = 0;
     int cpt_ln = 0;
-    char **tab;
-    char ligne[100];
     int prog = 0;
     int j = 0;
     int k = 0;
     FILE *fichier = NULL; // Pointeur sur struct dans stdio
-    int tmp;
     int tour = 0;
-
     fichier = fopen("fiches.txt", "r");
     if (fichier != NULL) // Si le fichier existe
     {
@@ -127,16 +122,14 @@ char    **load_fiche() /// Transformer le fichier en tableau de string
         k = 0;
         prog = 0;
     }
+    //free(ligne);
     fclose(fichier);
-    //tab = sort_tab(tab);
     return (tab);
 }
 
 void    disp_all_fiches(char **tab) /// Afficher toutes les fiches a partir du tableau de string
 {
-    int i;
-
-    i = 0;
+    int i = 0;
     while(tab[i] != NULL)
     {
         printf("Fiche numero %d : %s \n", i, tab[i]);
@@ -147,7 +140,6 @@ void    disp_all_fiches(char **tab) /// Afficher toutes les fiches a partir du t
 void    echo_to_fichier(char **tab) /// Ecrire dans le fichier le tableau de string
 {
     int i = 0;
-
     FILE *fichier = NULL;
     fichier = fopen("fiches.txt", "w+");
     while(tab[i] != NULL)
@@ -171,18 +163,12 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
     int prog = 0;
     int k = 0;
     char str[100];
-
     if(!(tmp = (struct fiche *)malloc(sizeof(struct fiche))))
     {
         printf("Allocation impossible");
         return (-1);
     }
-
-
-    /// FILM
-
-
-    printf("Entrez le nom du film : ");
+    printf("Entrez le nom du film : "); /// FILM
     scanf("%s", film);
     nb = ft_strlen(film);
     if(!(tmp->nom_film = (char *) malloc((nb + 1)*sizeof(char))))
@@ -192,12 +178,7 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
         return (-1);
     }
     strcpy(tmp->nom_film, film);
-
-
-    /// ANNEE
-
-
-    printf("Entrez l'annee du film : ");
+    printf("Entrez l'annee du film : "); /// ANNEE
     scanf("%d", &annee);
     if(!(tmp->annee = (int)malloc(sizeof(int))))
     {
@@ -206,11 +187,7 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
         return (-1);
     }
     tmp->annee = annee;
-
-    /// NOM REALISATEUR
-
-
-    printf("Entrez le nom du realisateur : ");
+    printf("Entrez le nom du realisateur : "); /// NOM REALISATEUR
     scanf("%s", nom_real);
     nb = ft_strlen(nom_real);
     if(!(tmp->realisateur[0] = (char *) malloc((nb + 1)*sizeof(char))))
@@ -220,12 +197,7 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
         return (-1);
     }
     strcpy(tmp->realisateur[0], nom_real);
-
-
-
-    /// PRENOM REALISATEUR
-
-    printf("Entrez le prenom du realisateur : ");
+    printf("Entrez le prenom du realisateur : "); /// PRENOM REALISATEUR
     scanf("%s", prenom_real);
     nb = ft_strlen(prenom_real);
     if(!(tmp->realisateur[1] = (char *) malloc((nb + 1)*sizeof(char))))
@@ -235,13 +207,11 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
         return (-1);
     }
     strcpy(tmp->realisateur[1], prenom_real);
-
     while (tab[j] != NULL)
         j++;
     itoa(tmp->annee, str, 10);
     if (!(tab[j] = (char*)malloc(ft_strlen(tmp->nom_film) + ft_strlen(str) + ft_strlen(tmp->realisateur[0]) + ft_strlen(tmp->realisateur[1])) + 1 * sizeof(char)))
             return (0);
-
     while (tmp->nom_film[prog])
     {
         tab[j][k] = tmp->nom_film[prog];
@@ -251,7 +221,6 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
     tab[j][k] = '-';
     k++;
     prog = 0;
-
     while (str[prog])
     {
         tab[j][k] = str[prog];
@@ -261,7 +230,6 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
     tab[j][k] = '-';
     k++;
     prog = 0;
-
     while (tmp->realisateur[0][prog])
     {
         tab[j][k] = tmp->realisateur[0][prog];
@@ -271,7 +239,6 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
     tab[j][k] = '-';
     k++;
     prog = 0;
-
     while (tmp->realisateur[1][prog])
     {
         tab[j][k] = tmp->realisateur[1][prog];
@@ -280,6 +247,7 @@ int   add_fiche(char** tab) /// Ajouter une fiche. On utilise une structure, don
     }
     tab[j][k] = '\0';
     tab[j+1] = NULL;
+    free(tmp);
     echo_to_fichier(tab);
     return (1);
 }
@@ -288,12 +256,10 @@ char **del_fiche(char **tab) /// Supprimer une fiches en effacant une fiche + dé
 {
     int choix;
     int len = cpt_fiches(tab);
-
     printf("Voici vos fiches : ");
     disp_all_fiches(tab);
     printf("\n Entrez le numero de la fiche que vous voulez supprimer : ");
     scanf("%d", &choix);
-
     if ((choix >= cpt_fiches(tab)) || (choix < 0))
     {
         printf("Fiche inexistante");
@@ -313,12 +279,74 @@ char **del_fiche(char **tab) /// Supprimer une fiches en effacant une fiche + dé
 
 int cpt_fiches(char **tab) /// Permet de compter le nb de fiches, indispensable pour l'allocation dynamique
 {
-    int i;
-
-    i = 0;
+    int i = 0;
     while(tab[i] != NULL)
         i++;
     return(i);
+}
+
+int similarity(char *s1, char *s2) /// Voir si deux chaines sont similaires. Renvoie 1 si true, 0 si false
+{
+    int i = 0;
+    while(s1[i] && s2[i])
+    {
+        if (s1[i] == s2[i])
+            i++;
+        else
+            return(0);
+    }
+    return(1);
+}
+
+void search_fiche(char **tab) /// Recherche d'une fiche
+{
+    int i = 0;
+    int j = 0;
+    char entree[100]; /// String que nous cherchons
+    char *tosearch; /// String que nous comparons a entree
+    int tableau[100]; /// Tableau contenant les id des fiches a afficher
+    int l = 0; /// Compte le nombre de fiches correspondant a la recherche
+
+    printf("Entrez ce que vous voulez rechercher (sur le champ nom_film) : ");
+    scanf("%s", entree);
+    while(tab[i] != NULL)
+    {
+        while(tab[i][j] != '-')
+            j++;
+        if(!(tosearch = (char *)malloc((j + 1) * sizeof(char))))
+            printf("Allocation impossible");
+        j = 0;
+        while (tab[i][j] != '-')
+        {
+            tosearch[j] = tab[i][j];
+            j++;
+        }
+        tosearch[j] = '\0';
+        if (similarity(entree, tosearch)) /// Si les deux string sont similaires, on enregistre sa position dans tableau
+        {
+            tableau[l] = i;
+            l++;
+        }
+        i++;
+    }
+    if(!l)
+       printf("Aucune entree trouvee");
+    else
+        disp_all_fiches_from_search(tableau, tab, l);
+}
+
+void disp_all_fiches_from_search(int *tableau, char **tab, int l) /// Afficher les fiches correspondant a la recherche
+{
+    int i = 0;
+    int tmp = 0;
+
+    while(l)
+    {
+        tmp = tableau[i];
+        printf("Fiche correspondant a la recherche : %s \n", tab[tmp]);
+        l--;
+        i++;
+    }
 }
 
 int main()
@@ -326,15 +354,14 @@ int main()
     int choix; /// Choix dans le menu
     int ok;
     int nbfiches;
-
     char **tab; /// Tableau des fiches chargées
-    printf("Bonjour !\n Que voulez-vous faire ? \n 1 : Ajouter une fiche \n 2 : Afficher toutes les fiches \n 3 : Trier les fiches dans l'ordre croissant, a partir du nom \n 4 : Supprimer une fiche \n 5 : Quitter \n");
+    printf("Bonjour !\n Que voulez-vous faire ? \n 1 : Ajouter une fiche \n 2 : Afficher toutes les fiches \n 3 : Trier les fiches dans l'ordre croissant ou decroissant, a partir du nom \n 4 : Supprimer une fiche \n 5 : Rechercher une fiche \n 6 : Quitter \n");
     tab = load_fiche();
     nbfiches = cpt_fiches(tab);
     printf("\nVous avez %d fiches. Vous pouvez encore ajouter %d fiches.", nbfiches, 100-nbfiches);
     printf("\n\nVoici les fiches actuelles : \n\n");
     disp_all_fiches(tab);
-    if (nbfiches < 100)
+    if (nbfiches < 100) /// On verifie que l'utilisateur a pas entre plus de 100 fiches
     {
         do
         {
@@ -365,15 +392,20 @@ int main()
                 echo_to_fichier(tab);
                 break;
 
-                case 5 : /// Quitter
+                case 5 : /// Chercher une fiche sur le champ nom_film
+                search_fiche(tab);
+                break;
+
+                case 6 : /// Quitter
                 printf("Au revoir, a bientot \n");
                 return(1);
+
 
                 default : /// invalide
                 printf("Saisie invalide");
                 break;
             }
-        } while(choix != 5);
+        } while(choix != 6);
     }
     else /// Cas ou il y a trop de fiches.
     {
@@ -381,6 +413,5 @@ int main()
         del_fiche(tab);
         echo_to_fichier(tab);
     }
-
     return (1);
 }

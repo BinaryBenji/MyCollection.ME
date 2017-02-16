@@ -25,5 +25,8 @@ void            echo_to_fichier(char **tab);
 int             add_fiche(char** tab);
 char            **del_fiche(char **tab);
 int             cpt_fiches(char **tab);
+void disp_all_fiches_from_search(int *tableau, char **tab, int l);
+void search_fiche(char **tab);
+int similarity(char *s1, char *s2);
 
 #endif // MY_COLLECTION_H_INCLUDED
